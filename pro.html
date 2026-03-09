@@ -1,0 +1,2364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StyleSense — AI Fashion Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ════════════════════════════════════════════════
+       DESIGN SYSTEM — Noir Luxe Editorial
+    ════════════════════════════════════════════════ */
+    :root {
+      --ink: #0a0908;
+      --ivory: #f5f0e8;
+      --gold: #c9a84c;
+      --gold-lt: #e8c97a;
+      --blush: #d4a5a5;
+      --slate: #2e2d2b;
+      --mid: #6b6560;
+      --dim: #3e3c39;
+      --glass: rgba(245, 240, 232, 0.04);
+      --border: rgba(201, 168, 76, 0.2);
+
+      --f-display: 'Playfair Display', Georgia, serif;
+      --f-serif: 'Cormorant Garamond', Georgia, serif;
+      --f-sans: 'DM Sans', sans-serif;
+
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--f-sans);
+      background: var(--ink);
+      color: var(--ivory);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom Cursor ─────────────────────────────── */
+    .cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s, background .2s;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(201, 168, 76, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width .4s var(--ease), height .4s var(--ease), border-color .3s;
+    }
+
+    body:has(.cta-btn:hover) .cursor-ring,
+    body:has(a:hover) .cursor-ring {
+      width: 56px;
+      height: 56px;
+      border-color: var(--gold);
+    }
+
+    body:has(.cta-btn:hover) .cursor-dot {
+      background: var(--gold-lt);
+    }
+
+    /* ── Scrollbar ─────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--ink);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    /* ════════════════════════════════════════════════
+       NOISE TEXTURE OVERLAY
+    ════════════════════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+    }
+
+    /* ════════════════════════════════════════════════
+       NAVIGATION
+    ════════════════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 60px;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .4s, background .4s;
+    }
+
+    nav.scrolled {
+      background: rgba(10, 9, 8, 0.85);
+      border-bottom-color: var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--f-display);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--ivory);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color .3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width .3s var(--ease);
+    }
+
+    .nav-links a:hover {
+      color: var(--ivory);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--gold);
+      padding: 10px 24px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .3s, transform .2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold-lt);
+      transform: translateY(-1px);
+    }
+
+    /* ════════════════════════════════════════════════
+       HERO SECTION
+    ════════════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 140px 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated grain background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 20% 80%, rgba(212, 165, 165, 0.05) 0%, transparent 60%);
+    }
+
+    /* Vertical text strip */
+    .hero-vert-text {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--mid);
+      white-space: nowrap;
+    }
+
+    .hero-left {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease) .2s forwards;
+    }
+
+    .hero-eyebrow-line {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero-eyebrow-text {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-family: var(--f-sans);
+    }
+
+    .hero-title {
+      font-family: var(--f-display);
+      font-size: clamp(52px, 6vw, 88px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -1px;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease) .4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-desc {
+      font-family: var(--f-serif);
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: rgba(245, 240, 232, 0.65);
+      max-width: 440px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease) .6s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      opacity: 0;
+      animation: fadeUp .8s var(--ease) .8s forwards;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--gold);
+      color: var(--ink);
+      padding: 16px 36px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .3s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold-lt);
+      transform: translateX(-101%);
+      transition: transform .4s var(--ease);
+    }
+
+    .cta-btn:hover::before {
+      transform: translateX(0);
+    }
+
+    .cta-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-ghost {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color .3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cta-ghost:hover {
+      color: var(--ivory);
+    }
+
+    .cta-ghost-arrow {
+      transition: transform .3s;
+    }
+
+    .cta-ghost:hover .cta-ghost-arrow {
+      transform: translateX(4px);
+    }
+
+    /* Hero Right — Visual Card Stack */
+    .hero-right {
+      position: relative;
+      height: 560px;
+      opacity: 0;
+      animation: fadeIn 1.2s var(--ease) .5s forwards;
+    }
+
+    .card-stack {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .style-card {
+      position: absolute;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      padding: 28px;
+      transition: transform .5s var(--ease);
+    }
+
+    .style-card:nth-child(1) {
+      width: 280px;
+      top: 0;
+      right: 60px;
+      transform: rotate(3deg);
+      animation: float1 6s ease-in-out infinite;
+    }
+
+    .style-card:nth-child(2) {
+      width: 260px;
+      top: 120px;
+      right: 0;
+      transform: rotate(-2deg);
+      animation: float2 7s ease-in-out infinite;
+    }
+
+    .style-card:nth-child(3) {
+      width: 300px;
+      bottom: 40px;
+      right: 80px;
+      transform: rotate(1.5deg);
+      animation: float3 5.5s ease-in-out infinite;
+    }
+
+    .card-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-family: var(--f-serif);
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--mid);
+    }
+
+    .card-score {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-top: 14px;
+    }
+
+    .card-score-num {
+      font-family: var(--f-display);
+      font-size: 42px;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .card-score-pct {
+      font-size: 12px;
+      color: var(--mid);
+    }
+
+    /* Stats strip on hero */
+    .hero-stats {
+      position: absolute;
+      bottom: -40px;
+      left: 0;
+      right: 0;
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-stat {
+      flex: 1;
+      padding: 24px 32px;
+      border-right: 1px solid var(--border);
+      opacity: 0;
+      animation: fadeUp .6s var(--ease) calc(.9s + var(--i) * .1s) forwards;
+    }
+
+    .hero-stat:last-child {
+      border-right: none;
+    }
+
+    .stat-num {
+      font-family: var(--f-display);
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--mid);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* ════════════════════════════════════════════════
+       MARQUEE
+    ════════════════════════════════════════════════ */
+    .marquee-wrap {
+      margin-top: 120px;
+      /* push below stats */
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 14px 0;
+      background: rgba(201, 168, 76, 0.03);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-item {
+      white-space: nowrap;
+      padding: 0 40px;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--mid);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .marquee-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    /* ════════════════════════════════════════════════
+       HOW IT WORKS
+    ════════════════════════════════════════════════ */
+    .section {
+      padding: 120px 60px;
+      position: relative;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 72px;
+    }
+
+    .section-eyebrow {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 30px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title {
+      font-family: var(--f-display);
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .section-subtitle {
+      font-family: var(--f-serif);
+      font-size: 17px;
+      color: var(--mid);
+      max-width: 340px;
+      line-height: 1.7;
+      text-align: right;
+    }
+
+    /* Steps */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      border: 1px solid var(--border);
+    }
+
+    .step {
+      padding: 48px 36px;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: background .4s;
+    }
+
+    .step:last-child {
+      border-right: none;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201, 168, 76, 0.06), transparent);
+      opacity: 0;
+      transition: opacity .4s;
+    }
+
+    .step:hover::before {
+      opacity: 1;
+    }
+
+    .step-num {
+      font-family: var(--f-display);
+      font-size: 72px;
+      font-weight: 900;
+      color: rgba(201, 168, 76, 0.1);
+      line-height: 1;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .step-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .step-title {
+      font-family: var(--f-serif);
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* ════════════════════════════════════════════════
+       FEATURES BENTO GRID
+    ════════════════════════════════════════════════ */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto;
+      gap: 12px;
+    }
+
+    .bento-item {
+      background: rgba(245, 240, 232, 0.03);
+      border: 1px solid var(--border);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .4s, transform .4s var(--ease);
+    }
+
+    .bento-item:hover {
+      border-color: rgba(201, 168, 76, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .bento-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s var(--ease);
+    }
+
+    .bento-item:hover::after {
+      transform: scaleX(1);
+    }
+
+    .b1 {
+      grid-column: span 7;
+    }
+
+    .b2 {
+      grid-column: span 5;
+    }
+
+    .b3 {
+      grid-column: span 4;
+    }
+
+    .b4 {
+      grid-column: span 4;
+    }
+
+    .b5 {
+      grid-column: span 4;
+    }
+
+    .b6 {
+      grid-column: span 5;
+    }
+
+    .b7 {
+      grid-column: span 7;
+    }
+
+    .bento-eyebrow {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .bento-title {
+      font-family: var(--f-serif);
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+
+    .bento-desc {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    .bento-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .bento-num {
+      font-family: var(--f-display);
+      font-size: 72px;
+      font-weight: 900;
+      color: rgba(201, 168, 76, 0.15);
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      line-height: 1;
+    }
+
+    /* Feature Visual mock */
+    .bento-visual {
+      margin-top: 28px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .mock-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .mock-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--blush));
+      flex-shrink: 0;
+    }
+
+    .mock-lines {
+      flex: 1;
+    }
+
+    .mock-line {
+      height: 8px;
+      background: rgba(245, 240, 232, 0.08);
+      margin-bottom: 5px;
+      border-radius: 2px;
+    }
+
+    .mock-line.w60 {
+      width: 60%;
+    }
+
+    .mock-line.w80 {
+      width: 80%;
+    }
+
+    .mock-line.w40 {
+      width: 40%;
+    }
+
+    .palette-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .palette-swatch {
+      height: 40px;
+      flex: 1;
+      border-radius: 2px;
+    }
+
+    /* ════════════════════════════════════════════════
+       STYLER DEMO SECTION
+    ════════════════════════════════════════════════ */
+    .demo-section {
+      padding: 120px 60px;
+      background: linear-gradient(180deg, transparent, rgba(201, 168, 76, 0.03), transparent);
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    .demo-form {
+      border: 1px solid var(--border);
+      padding: 40px;
+    }
+
+    .form-title {
+      font-family: var(--f-serif);
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-sub {
+      font-size: 12px;
+      color: var(--mid);
+      margin-bottom: 32px;
+    }
+
+    .form-field {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .form-select,
+    .form-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      color: var(--ivory);
+      padding: 12px 16px;
+      font-size: 13px;
+      font-family: var(--f-sans);
+      outline: none;
+      transition: border-color .3s;
+      appearance: none;
+    }
+
+    .form-select:focus,
+    .form-input:focus {
+      border-color: var(--gold);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Upload Box */
+    .upload-box {
+      border: 1px dashed rgba(201, 168, 76, 0.3);
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .3s;
+      margin-bottom: 20px;
+    }
+
+    .upload-box:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.04);
+    }
+
+    .upload-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .upload-text {
+      font-size: 12px;
+      color: var(--mid);
+    }
+
+    .upload-text strong {
+      color: var(--ivory);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: background .3s;
+    }
+
+    .form-btn:hover {
+      background: var(--gold-lt);
+    }
+
+    /* Output Mock */
+    .demo-output {
+      border: 1px solid var(--border);
+      padding: 40px;
+      min-height: 520px;
+      position: relative;
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .output-headline {
+      font-family: var(--f-display);
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.1;
+      max-width: 360px;
+    }
+
+    .output-headline em {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .output-match {
+      text-align: right;
+    }
+
+    .match-num {
+      font-family: var(--f-display);
+      font-size: 48px;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .match-label {
+      font-size: 10px;
+      color: var(--mid);
+      letter-spacing: 2px;
+    }
+
+    .outfit-pieces {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .outfit-piece {
+      border: 1px solid var(--border);
+      padding: 16px;
+      transition: border-color .3s;
+    }
+
+    .outfit-piece:hover {
+      border-color: rgba(201, 168, 76, 0.4);
+    }
+
+    .piece-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .piece-name {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .piece-why {
+      font-size: 11px;
+      color: var(--mid);
+      font-style: italic;
+    }
+
+    .output-palette {
+      display: flex;
+      gap: 8px;
+    }
+
+    .out-swatch {
+      flex: 1;
+      height: 36px;
+      position: relative;
+    }
+
+    .out-swatch-name {
+      position: absolute;
+      bottom: -18px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 9px;
+      color: var(--mid);
+      white-space: nowrap;
+    }
+
+    /* ════════════════════════════════════════════════
+       TRENDS SECTION
+    ════════════════════════════════════════════════ */
+    .trends-scroll {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 20px;
+      scrollbar-width: none;
+    }
+
+    .trends-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .trend-card {
+      flex-shrink: 0;
+      width: 280px;
+      border: 1px solid var(--border);
+      padding: 36px 28px;
+      transition: border-color .3s, transform .4s var(--ease);
+      cursor: pointer;
+    }
+
+    .trend-card:hover {
+      border-color: rgba(201, 168, 76, 0.5);
+      transform: translateY(-4px);
+    }
+
+    .trend-emoji {
+      font-size: 36px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .trend-season {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .trend-name {
+      font-family: var(--f-serif);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .trend-desc {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    /* ════════════════════════════════════════════════
+       TESTIMONIALS
+    ════════════════════════════════════════════════ */
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .testi-card {
+      border: 1px solid var(--border);
+      padding: 40px;
+      position: relative;
+      transition: border-color .3s, transform .4s var(--ease);
+    }
+
+    .testi-card:hover {
+      border-color: rgba(201, 168, 76, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .testi-quote {
+      font-size: 64px;
+      color: var(--gold);
+      opacity: .15;
+      font-family: var(--f-display);
+      line-height: .8;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .testi-text {
+      font-family: var(--f-serif);
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 28px;
+      color: rgba(245, 240, 232, 0.85);
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testi-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--blush));
+    }
+
+    .testi-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .testi-role {
+      font-size: 11px;
+      color: var(--mid);
+    }
+
+    .testi-stars {
+      color: var(--gold);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* ════════════════════════════════════════════════
+       CTA SECTION
+    ════════════════════════════════════════════════ */
+    .cta-section {
+      padding: 140px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(201, 168, 76, 0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-pre {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    .cta-title {
+      font-family: var(--f-display);
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 900;
+      line-height: 0.95;
+      margin-bottom: 32px;
+    }
+
+    .cta-title em {
+      display: block;
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .cta-body {
+      font-family: var(--f-serif);
+      font-size: 20px;
+      color: var(--mid);
+      margin-bottom: 56px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ════════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 60px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .footer-brand {}
+
+    .footer-logo {
+      font-family: var(--f-display);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--ivory);
+    }
+
+    .footer-logo span {
+      color: var(--gold);
+    }
+
+    .footer-tagline {
+      font-size: 12px;
+      color: var(--mid);
+      margin-top: 6px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-links a {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color .3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    .footer-copy {
+      font-size: 11px;
+      color: var(--mid);
+    }
+
+    /* ════════════════════════════════════════════════
+       ANIMATIONS
+    ════════════════════════════════════════════════ */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes float1 {
+
+      0%,
+      100% {
+        transform: rotate(3deg) translateY(0);
+      }
+
+      50% {
+        transform: rotate(3deg) translateY(-12px);
+      }
+    }
+
+    @keyframes float2 {
+
+      0%,
+      100% {
+        transform: rotate(-2deg) translateY(-8px);
+      }
+
+      50% {
+        transform: rotate(-2deg) translateY(8px);
+      }
+    }
+
+    @keyframes float3 {
+
+      0%,
+      100% {
+        transform: rotate(1.5deg) translateY(0);
+      }
+
+      50% {
+        transform: rotate(1.5deg) translateY(-16px);
+      }
+    }
+
+    @keyframes marquee {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(1);
+        opacity: .4;
+      }
+
+      100% {
+        transform: scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Live indicator */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      margin-bottom: 24px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: #4caf50;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .live-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border: 1px solid #4caf50;
+      border-radius: 50%;
+      animation: pulse-ring 1.5s ease-out infinite;
+    }
+
+    /* ════════════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      nav {
+        padding: 20px 28px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 120px 28px 60px;
+      }
+
+      .hero-right {
+        display: none;
+      }
+
+      .section {
+        padding: 80px 28px;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .bento .b1,
+      .bento .b2,
+      .bento .b3,
+      .bento .b4,
+      .bento .b5,
+      .bento .b6,
+      .bento .b7 {
+        grid-column: span 12;
+      }
+
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .testi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-section {
+        padding: 80px 28px;
+      }
+
+      footer {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .footer-right {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-title {
+        font-size: 42px;
+      }
+
+      .hero-stats {
+        flex-wrap: wrap;
+      }
+
+      .hero-stat {
+        flex: 0 0 50%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ════════ NAV ════════ -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">Style<span>Sense</span></a>
+    <ul class="nav-links">
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#styler">Try Styler</a></li>
+      <li><a href="#trends">Trends</a></li>
+    </ul>
+    <a href="#styler" class="nav-cta">Get Styled →</a>
+  </nav>
+
+  <!-- ════════ HERO ════════ -->
+  <section class="hero" id="home">
+    <div class="hero-vert-text">AI Fashion Intelligence — Est. 2025</div>
+
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <div class="hero-eyebrow-text">Generative AI · Personal Styling</div>
+      </div>
+
+      <h1 class="hero-title">
+        Your AI<br>Personal
+        <em>Stylist.</em>
+      </h1>
+
+      <p class="hero-desc">
+        Intelligent fashion recommendations powered by generative AI. Upload a photo, describe your vibe — get a
+        complete look curated just for you.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#styler" class="cta-btn">
+          <span>✦ Start Styling</span>
+        </a>
+        <a href="#how" class="cta-ghost">
+          See how it works <span class="cta-ghost-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="card-stack">
+
+        <div class="style-card">
+          <div class="card-label">AI Recommendation</div>
+          <div class="card-title">The Minimalist Power Look</div>
+          <div class="card-sub">Crisp white blazer, tailored trousers, leather mules — for the modern professional.
+          </div>
+          <div class="card-tags">
+            <span class="card-tag">Office</span>
+            <span class="card-tag">Spring</span>
+            <span class="card-tag">Minimal</span>
+          </div>
+        </div>
+
+        <div class="style-card">
+          <div class="card-label">Style Match Score</div>
+          <div class="card-score">
+            <span class="card-score-num">94</span>
+            <span class="card-score-pct">% match</span>
+          </div>
+          <div class="card-sub">Based on your colour palette, body type & occasion preferences.</div>
+        </div>
+
+        <div class="style-card">
+          <div class="card-label">Colour Palette</div>
+          <div class="card-title">Your Signature Tones</div>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <div style="width:36px;height:36px;background:#c9a84c;border-radius:2px;"></div>
+            <div style="width:36px;height:36px;background:#d4a5a5;border-radius:2px;"></div>
+            <div style="width:36px;height:36px;background:#f5f0e8;border-radius:2px;"></div>
+            <div style="width:36px;height:36px;background:#2e2d2b;border-radius:2px;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="hero-stats" style="grid-column: 1 / -1;">
+      <div class="hero-stat" style="--i:0">
+        <span class="stat-num">50K+</span>
+        <span class="stat-label">Outfits Generated</span>
+      </div>
+      <div class="hero-stat" style="--i:1">
+        <span class="stat-num">94%</span>
+        <span class="stat-label">Style Accuracy</span>
+      </div>
+      <div class="hero-stat" style="--i:2">
+        <span class="stat-num">12K+</span>
+        <span class="stat-label">Happy Users</span>
+      </div>
+      <div class="hero-stat" style="--i:3">
+        <span class="stat-num">200+</span>
+        <span class="stat-label">Style Categories</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ MARQUEE ════════ -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <!-- Items duplicated via JS -->
+    </div>
+  </div>
+
+  <!-- ════════ HOW IT WORKS ════════ -->
+  <section class="section" id="how">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-eyebrow">Process</div>
+        <h2 class="section-title">How <em>StyleSense</em><br>Works</h2>
+      </div>
+      <p class="section-subtitle">Four intelligent steps from your preferences to a perfect outfit — powered by Claude
+        AI.</p>
+    </div>
+
+    <div class="steps-grid reveal">
+      <div class="step">
+        <span class="step-num">01</span>
+        <span class="step-icon">👤</span>
+        <div class="step-title">Share Your Preferences</div>
+        <p class="step-desc">Tell us your occasion, season, body type, style aesthetic, colour preferences, and budget.
+          The more detail, the more personalised your look.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <span class="step-icon">📸</span>
+        <div class="step-title">Upload Your Photo</div>
+        <p class="step-desc">Optionally upload a selfie or outfit photo. Our AI vision model analyses your current
+          style, fit, and colours — then incorporates insights into your recommendation.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <span class="step-icon">🧠</span>
+        <div class="step-title">AI Analyses & Generates</div>
+        <p class="step-desc">Claude AI cross-references your profile with current trend data, colour theory, and
+          occasion suitability to craft a complete, cohesive outfit recommendation.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <span class="step-icon">✦</span>
+        <div class="step-title">Receive Your Look</div>
+        <p class="step-desc">Get a full outfit breakdown — top, bottom, shoes, accessories — with a personal colour
+          palette, styling tips, what to avoid, and curated shopping picks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ FEATURES BENTO ════════ -->
+  <section class="section" id="features" style="background: rgba(201,168,76,0.015);">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-eyebrow">Capabilities</div>
+        <h2 class="section-title">Every Feature<br>You <em>Need</em></h2>
+      </div>
+      <p class="section-subtitle">A complete AI fashion intelligence suite — from image analysis to trend tracking.</p>
+    </div>
+
+    <div class="bento reveal">
+
+      <div class="bento-item b1">
+        <div class="bento-eyebrow">Core Engine</div>
+        <span class="bento-icon">🎯</span>
+        <div class="bento-title">Personalised AI Outfit Recommendations</div>
+        <p class="bento-desc">Our generative AI engine analyses your style DNA — occasion, season, body type, colour
+          palette, and aesthetic — to produce a complete, fully explained outfit you'll actually love wearing.</p>
+        <div class="bento-visual">
+          <div class="mock-row">
+            <div class="mock-dot"></div>
+            <div class="mock-lines">
+              <div class="mock-line w80"></div>
+              <div class="mock-line w60"></div>
+            </div>
+          </div>
+          <div class="mock-row">
+            <div class="mock-dot" style="background: linear-gradient(135deg, #d4a5a5, #c9a84c);"></div>
+            <div class="mock-lines">
+              <div class="mock-line w60"></div>
+              <div class="mock-line w40"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bento-num">01</div>
+      </div>
+
+      <div class="bento-item b2">
+        <div class="bento-eyebrow">Vision AI</div>
+        <span class="bento-icon">👁</span>
+        <div class="bento-title">Image-Based Outfit Analysis</div>
+        <p class="bento-desc">Upload any photo. Claude Vision analyses fit, colour harmony, and style category — then
+          suggests targeted improvements and complementary pieces.</p>
+        <div class="bento-num">02</div>
+      </div>
+
+      <div class="bento-item b3">
+        <div class="bento-eyebrow">Colour Science</div>
+        <span class="bento-icon">🎨</span>
+        <div class="bento-title">Custom Colour Palettes</div>
+        <p class="bento-desc">AI-generated hex palettes matched to your skin tone, season, and aesthetic.</p>
+        <div class="palette-row">
+          <div class="palette-swatch" style="background:#c9a84c;"></div>
+          <div class="palette-swatch" style="background:#d4a5a5;"></div>
+          <div class="palette-swatch" style="background:#8b7355;"></div>
+          <div class="palette-swatch" style="background:#f5f0e8;"></div>
+        </div>
+        <div class="bento-num">03</div>
+      </div>
+
+      <div class="bento-item b4">
+        <div class="bento-eyebrow">Trend Intelligence</div>
+        <span class="bento-icon">🔥</span>
+        <div class="bento-title">Season Trend Dashboard</div>
+        <p class="bento-desc">Stay ahead with curated runway & street-style trends updated each season.</p>
+        <div class="bento-num">04</div>
+      </div>
+
+      <div class="bento-item b5">
+        <div class="bento-eyebrow">Shopping</div>
+        <span class="bento-icon">🛍️</span>
+        <div class="bento-title">Curated Product Picks</div>
+        <p class="bento-desc">Budget-matched product recommendations from brands that fit your style profile.</p>
+        <div class="bento-num">05</div>
+      </div>
+
+      <div class="bento-item b7">
+        <div class="bento-eyebrow">Intelligence</div>
+        <span class="bento-icon">💬</span>
+        <div class="bento-title">Explainable AI Styling Advice</div>
+        <p class="bento-desc">StyleSense doesn't just tell you what to wear — it tells you <em>why</em>. Every
+          recommendation comes with detailed rationale covering colour theory, occasion suitability, body proportions,
+          and current trend relevance. Fashion intelligence you can actually learn from.</p>
+        <div class="bento-num">06</div>
+      </div>
+
+      <div class="bento-item b5">
+        <div class="bento-eyebrow">Memory</div>
+        <span class="bento-icon">🤍</span>
+        <div class="bento-title">Save Your Favourite Looks</div>
+        <p class="bento-desc">Build a personalised library of your best AI-curated outfits.</p>
+        <div class="bento-num">07</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════ STYLER DEMO ════════ -->
+  <section class="demo-section" id="styler">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-eyebrow">Live Demo</div>
+        <h2 class="section-title">Try the<br><em>Styler</em></h2>
+      </div>
+      <p class="section-subtitle">See what StyleSense AI would recommend for your next look.</p>
+    </div>
+
+    <div class="demo-grid">
+
+      <!-- Form Panel -->
+      <div class="demo-form reveal">
+        <div class="live-badge"><span class="live-dot"></span> AI Engine Active</div>
+        <div class="form-title">Your Style Profile</div>
+        <div class="form-sub">Fill in your preferences to generate a recommendation</div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Gender</label>
+            <select class="form-select" id="f-gender">
+              <option value="">Select</option>
+              <option>Women</option>
+              <option>Men</option>
+              <option>Non-Binary</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Season</label>
+            <select class="form-select" id="f-season">
+              <option value="">Select</option>
+              <option>Spring</option>
+              <option>Summer</option>
+              <option>Autumn</option>
+              <option>Winter</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Occasion</label>
+          <select class="form-select" id="f-occasion">
+            <option value="">Select occasion</option>
+            <option>Casual</option>
+            <option>Work / Office</option>
+            <option>Date Night</option>
+            <option>Wedding / Formal</option>
+            <option>Party</option>
+            <option>Beach / Vacation</option>
+            <option>Gym / Active</option>
+            <option>Festival</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Style Aesthetic</label>
+          <select class="form-select" id="f-style">
+            <option value="">Select style</option>
+            <option>Minimalist</option>
+            <option>Streetwear</option>
+            <option>Bohemian</option>
+            <option>Classic / Preppy</option>
+            <option>Romantic</option>
+            <option>Edgy / Punk</option>
+            <option>Athleisure</option>
+            <option>Vintage / Retro</option>
+            <option>Luxe / High Fashion</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Colour Preference</label>
+            <select class="form-select" id="f-color">
+              <option value="">Select</option>
+              <option>Neutrals</option>
+              <option>Bold & Bright</option>
+              <option>Earth Tones</option>
+              <option>Pastels</option>
+              <option>Monochrome</option>
+              <option>Jewel Tones</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Budget</label>
+            <select class="form-select" id="f-budget">
+              <option value="">Select</option>
+              <option>Budget (&lt;$50)</option>
+              <option>Mid-range ($50–$200)</option>
+              <option>Premium ($200–$500)</option>
+              <option>Luxury ($500+)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Body Type</label>
+          <select class="form-select" id="f-body">
+            <option value="">Select (optional)</option>
+            <option>Petite</option>
+            <option>Tall</option>
+            <option>Athletic</option>
+            <option>Curvy</option>
+            <option>Slim</option>
+            <option>Hourglass</option>
+          </select>
+        </div>
+
+        <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">📸</div>
+          <div class="upload-text">
+            <strong>Upload Outfit Photo</strong>
+            Drag & drop or click · JPG, PNG up to 10MB
+          </div>
+          <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(this)" />
+        </div>
+
+        <button class="form-btn" onclick="generateRecommendation()">
+          ✦ Generate My Recommendation
+        </button>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="demo-output reveal" id="outputPanel">
+
+        <!-- Default state -->
+        <div id="outputDefault"
+          style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; padding:40px;">
+          <div style="font-size:64px; opacity:.15; margin-bottom:24px;">✦</div>
+          <div style="font-family:var(--f-serif); font-size:22px; color:rgba(245,240,232,0.4); margin-bottom:12px;">Your
+            look awaits</div>
+          <div style="font-size:12px; color:var(--mid); max-width:300px; line-height:1.6;">Fill in your style profile
+            and hit generate. Claude AI will craft a complete, personalised outfit recommendation for you.</div>
+        </div>
+
+        <!-- Loading state -->
+        <div id="outputLoading"
+          style="display:none; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center;">
+          <div style="font-size:48px; animation:spin 2s linear infinite; color:var(--gold); margin-bottom:24px;">✦</div>
+          <div style="font-family:var(--f-serif); font-size:20px; margin-bottom:8px;" id="loadingText">Consulting the
+            style archives…</div>
+          <div style="font-size:12px; color:var(--mid);">Claude AI is crafting your look</div>
+        </div>
+
+        <!-- Result state -->
+        <div id="outputResult" style="display:none;">
+
+          <div class="output-header">
+            <div>
+              <div
+                style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">
+                AI Recommendation</div>
+              <div class="output-headline" id="res-headline">The Effortless <em>Evening Edit</em></div>
+            </div>
+            <div class="output-match">
+              <div class="match-num" id="res-score">96</div>
+              <div class="match-label">% Match</div>
+            </div>
+          </div>
+
+          <div
+            style="font-family:var(--f-serif);font-size:15px;color:rgba(245,240,232,0.6);margin-bottom:24px;font-style:italic;"
+            id="res-mantra">
+            "Dress like the most elegant version of yourself."
+          </div>
+
+          <div class="outfit-pieces" id="res-outfit">
+            <div class="outfit-piece">
+              <div class="piece-label">👕 Top</div>
+              <div class="piece-name">Ivory silk camisole</div>
+              <div class="piece-why">Elevates the look with understated luxury</div>
+            </div>
+            <div class="outfit-piece">
+              <div class="piece-label">👖 Bottom</div>
+              <div class="piece-name">Tailored wide-leg trousers, camel</div>
+              <div class="piece-why">Elongates the silhouette effortlessly</div>
+            </div>
+            <div class="outfit-piece">
+              <div class="piece-label">👟 Shoes</div>
+              <div class="piece-name">Pointed-toe kitten heels, nude</div>
+              <div class="piece-why">Maintains height without sacrificing comfort</div>
+            </div>
+            <div class="outfit-piece">
+              <div class="piece-label">✨ Accessories</div>
+              <div class="piece-name">Gold hoops + leather clutch</div>
+              <div class="piece-why">Adds warmth and editorial polish</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <div
+              style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">🎨
+              Your Palette</div>
+            <div class="output-palette" id="res-palette">
+              <div class="out-swatch" style="background:#c9a84c;">
+                <div class="out-swatch-name">Gold</div>
+              </div>
+              <div class="out-swatch" style="background:#d4b896;">
+                <div class="out-swatch-name">Camel</div>
+              </div>
+              <div class="out-swatch" style="background:#f5f0e8;">
+                <div class="out-swatch-name">Ivory</div>
+              </div>
+              <div class="out-swatch" style="background:#3e3020;">
+                <div class="out-swatch-name">Espresso</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="res-tips"
+            style="font-size:12px;color:var(--mid);line-height:1.8;border-top:1px solid var(--border);padding-top:16px;">
+            <strong
+              style="color:var(--ivory);font-size:11px;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px;">💡
+              Styling Tips</strong>
+            ✦ Tuck the camisole loosely for a relaxed elegance<br>
+            ✦ Let the gold accessories speak — keep other metals minimal<br>
+            ✦ A structured leather belt at the waist defines the silhouette
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ TRENDS ════════ -->
+  <section class="section" id="trends">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-eyebrow">Now Trending</div>
+        <h2 class="section-title">2025 <em>Fashion</em><br>Trends</h2>
+      </div>
+      <p class="section-subtitle">Runway insights distilled into wearable, seasonal direction.</p>
+    </div>
+
+    <div class="trends-scroll reveal">
+      <div class="trend-card"><span class="trend-emoji">🤍</span>
+        <div class="trend-season">Spring 2025</div>
+        <div class="trend-name">Quiet Luxury</div>
+        <div class="trend-desc">Tonal neutrals, quality fabrics, and understated elegance. No logos needed.</div>
+      </div>
+      <div class="trend-card"><span class="trend-emoji">🩰</span>
+        <div class="trend-season">Spring 2025</div>
+        <div class="trend-name">Ballet Core</div>
+        <div class="trend-desc">Wrap skirts, ribbon details, and a soft blush-pink palette straight from the barre.
+        </div>
+      </div>
+      <div class="trend-card"><span class="trend-emoji">🤠</span>
+        <div class="trend-season">Summer 2025</div>
+        <div class="trend-name">Coastal Cowgirl</div>
+        <div class="trend-desc">Denim cutoffs, cowboy boots, and breezy whites — the West meets the shore.</div>
+      </div>
+      <div class="trend-card"><span class="trend-emoji">🌈</span>
+        <div class="trend-season">Summer 2025</div>
+        <div class="trend-name">Dopamine Dressing</div>
+        <div class="trend-desc">Vivid, joyfully clashing colours. Wear happiness out loud.</div>
+      </div>
+      <div class="trend-card"><span class="trend-emoji">📚</span>
+        <div class="trend-season">Autumn 2025</div>
+        <div class="trend-name">Dark Academia</div>
+        <div class="trend-desc">Plaid blazers, turtlenecks, leather satchels, and rich autumnal browns.</div>
+      </div>
+      <div class="trend-card"><span class="trend-emoji">🖤</span>
+        <div class="trend-season">Autumn 2025</div>
+        <div class="trend-name">Leather Moment</div>
+        <div class="trend-desc">Head-to-toe leather and faux-leather layering. Textures over everything.</div>
+      </div>
+      <div class="trend-card"><span class="trend-emoji">⛷️</span>
+        <div class="trend-season">Winter 2025</div>
+        <div class="trend-name">Après-Ski Chic</div>
+        <div class="trend-desc">Puffer coats, snow boots, and ski-lodge knitwear elevated for the city.</div>
+      </div>
+      <div class="trend-card"><span class="trend-emoji">✨</span>
+        <div class="trend-season">Winter 2025</div>
+        <div class="trend-name">Glam Evening</div>
+        <div class="trend-desc">Sequins, metallics, and statement shoulders. The 70s are very much alive.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ TESTIMONIALS ════════ -->
+  <section class="section" style="background: rgba(201,168,76,0.015);">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-eyebrow">Testimonials</div>
+        <h2 class="section-title">What Users<br><em>Say</em></h2>
+      </div>
+    </div>
+
+    <div class="testi-grid reveal">
+      <div class="testi-card">
+        <span class="testi-quote">"</span>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">StyleSense nailed my aesthetic on the first try. The AI understood my minimalist
+          preferences and gave me an outfit that felt genuinely like me — not generic at all.</p>
+        <div class="testi-author">
+          <div class="testi-avatar"></div>
+          <div>
+            <div class="testi-name">Priya Menon</div>
+            <div class="testi-role">Fashion Blogger, Mumbai</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote">"</span>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">I uploaded a photo of an old outfit and the AI immediately spotted what was off — the
+          proportions. Its suggestions transformed my wardrobe in a week.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg,#8b7355,#c9a84c);"></div>
+          <div>
+            <div class="testi-name">James Okafor</div>
+            <div class="testi-role">Creative Director, Lagos</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote">"</span>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">The colour palette feature is genuinely game-changing. I now know exactly which tones work
+          for me — and I've stopped buying things that sit unworn in my wardrobe.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg,#d4a5a5,#e8c97a);"></div>
+          <div>
+            <div class="testi-name">Sofia Laurent</div>
+            <div class="testi-role">Stylist, Paris</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CTA SECTION ════════ -->
+  <section class="cta-section">
+    <div class="reveal">
+      <div class="cta-pre">✦ Your style evolution starts here</div>
+      <h2 class="cta-title">
+        Dress With
+        <em>Confidence.</em>
+      </h2>
+      <p class="cta-body">Let AI do the heavy lifting. Get a complete, personalised outfit recommendation in under 30
+        seconds — free to try.</p>
+      <div class="cta-actions">
+        <a href="#styler" class="cta-btn"><span>✦ Start Styling Free</span></a>
+        <a href="#features" class="cta-ghost">Explore Features <span class="cta-ghost-arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ FOOTER ════════ -->
+  <footer>
+    <div class="footer-brand">
+      <div class="footer-logo">Style<span>Sense</span></div>
+      <div class="footer-tagline">AI Fashion Intelligence Platform</div>
+    </div>
+    <div class="footer-links">
+      <a href="#how">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#styler">Try Styler</a>
+      <a href="#trends">Trends</a>
+    </div>
+    <div class="footer-right">
+      <div class="footer-copy">© 2025 StyleSense · Powered by Claude AI</div>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════════════
+    JAVASCRIPT
+  ════════════════════════════════════════════════ -->
+  <script>
+    // ── Custom Cursor ──────────────────────────────────────────────────────────
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px';
+      dot.style.top = my + 'px';
+    });
+
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // ── Navbar scroll ─────────────────────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ── Marquee setup ─────────────────────────────────────────────────────────
+    const marqueeItems = [
+      'AI-Powered Styling', 'Personalised Outfits', 'Trend Intelligence',
+      'Vision Analysis', 'Colour Theory', 'Occasion Dressing',
+      'Body-Type Fit', 'Curated Shopping', 'Style DNA Profiling',
+    ];
+
+    const track = document.getElementById('marqueeTrack');
+    const allItems = [...marqueeItems, ...marqueeItems, ...marqueeItems];
+    track.innerHTML = allItems.map(item => `
+      <span class="marquee-item">
+        <span class="marquee-dot"></span>${item}
+      </span>`).join('');
+
+    // ── Scroll Reveal ─────────────────────────────────────────────────────────
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── Image Upload ──────────────────────────────────────────────────────────
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const box = document.getElementById('uploadBox');
+      const reader = new FileReader();
+      reader.onload = e => {
+        box.innerHTML = `
+          <img src="${e.target.result}" style="width:100%;height:140px;object-fit:cover;border-radius:2px;" />
+          <div style="font-size:11px;color:var(--gold);margin-top:8px;text-align:center;">✓ ${file.name}</div>`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ── Demo Recommendation ───────────────────────────────────────────────────
+    const loadingTexts = [
+      'Consulting the style archives…',
+      'Analysing your colour profile…',
+      'Matching to current trends…',
+      'Curating your perfect look…',
+      'Adding final styling touches…',
+    ];
+
+    const demoOutfits = {
+      "Casual": {
+        headline: "The <em>Effortless Weekend</em> Edit",
+        mantra: "Style is wearing what you love, the way only you can.",
+        score: 93,
+        pieces: [
+          { icon: "👕", label: "Top", name: "Oversized linen shirt, off-white", why: "Breathable and effortlessly relaxed" },
+          { icon: "👖", label: "Bottom", name: "Straight-leg dark denim", why: "The perfect casual-smart crossover" },
+          { icon: "👟", label: "Shoes", name: "White leather low-top sneakers", why: "Clean, versatile, and timeless" },
+          { icon: "✨", label: "Accessories", name: "Canvas tote + gold watch", why: "Functional meets understated luxe" },
+        ],
+        palette: [["#c9a84c", "Gold"], ["#f5f0e8", "Ivory"], ["#2b2b2b", "Charcoal"], ["#8b7355", "Tan"]],
+        tips: ["Tuck shirt loosely at front only for shape", "Roll sleeves for a casual, editorial look", "Keep jewellery minimal — one piece per zone"],
+      },
+      "Work / Office": {
+        headline: "The <em>Power Dressing</em> Blueprint",
+        mantra: "Command every room before you say a word.",
+        score: 96,
+        pieces: [
+          { icon: "🧥", label: "Top", name: "Structured blazer, deep navy", why: "Authority and polish in one layer" },
+          { icon: "👖", label: "Bottom", name: "Tailored wide-leg trousers, camel", why: "Modern silhouette that photographs beautifully" },
+          { icon: "👟", label: "Shoes", name: "Pointed-toe loafers, cognac leather", why: "Grounds the outfit with sophistication" },
+          { icon: "✨", label: "Accessories", name: "Slim leather folio + gold stud earrings", why: "Professional detail that elevates the whole look" },
+        ],
+        palette: [["#1a237e", "Navy"], ["#c9a84c", "Gold"], ["#bf8c40", "Cognac"], ["#f5f0e8", "Cream"]],
+        tips: ["A monochrome base lets accessories do the talking", "Tailoring is everything — invest in the right fit", "Match your belt to your shoes for a polished finish"],
+      },
+      "Date Night": {
+        headline: "The <em>Evening Allure</em> Moment",
+        mantra: "Dress for the story you want to tell.",
+        score: 97,
+        pieces: [
+          { icon: "👗", label: "Dress", name: "Slip midi dress, champagne satin", why: "Effortlessly glamorous without trying too hard" },
+          { icon: "👟", label: "Shoes", name: "Strappy heeled sandals, gold", why: "Adds height and catches the light beautifully" },
+          { icon: "👜", label: "Bag", name: "Micro leather clutch, black", why: "Statement piece that contrasts the softness" },
+          { icon: "✨", label: "Accessories", name: "Delicate chain necklace + ear cuffs", why: "Layered metallics for modern romance" },
+        ],
+        palette: [["#e8c97a", "Champagne"], ["#c9a84c", "Gold"], ["#1a1a1a", "Onyx"], ["#d4a5a5", "Blush"]],
+        tips: ["Let the fabric move — choose a silhouette with drape", "A bold lip replaces the need for extra jewellery", "Evening scent is the invisible accessory"],
+      },
+    };
+
+    function generateRecommendation() {
+      const occasion = document.getElementById('f-occasion').value;
+      const gender = document.getElementById('f-gender').value;
+
+      const defEl = document.getElementById('outputDefault');
+      const loadEl = document.getElementById('outputLoading');
+      const resEl = document.getElementById('outputResult');
+
+      defEl.style.display = 'none';
+      loadEl.style.display = 'flex';
+      resEl.style.display = 'none';
+
+      let i = 0;
+      const ltEl = document.getElementById('loadingText');
+      const interval = setInterval(() => {
+        i = (i + 1) % loadingTexts.length;
+        ltEl.textContent = loadingTexts[i];
+      }, 1400);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        loadEl.style.display = 'none';
+        resEl.style.display = 'block';
+
+        const data = demoOutfits[occasion] || demoOutfits["Casual"];
+        populateResult(data);
+      }, 3200);
+    }
+
+    function populateResult(data) {
+      document.getElementById('res-headline').innerHTML = data.headline;
+      document.getElementById('res-mantra').textContent = `"${data.mantra}"`;
+      document.getElementById('res-score').textContent = data.score;
+
+      // Pieces
+      const outfitEl = document.getElementById('res-outfit');
+      outfitEl.innerHTML = data.pieces.map(p => `
+        <div class="outfit-piece">
+          <div class="piece-label">${p.icon} ${p.label}</div>
+          <div class="piece-name">${p.name}</div>
+          <div class="piece-why">${p.why}</div>
+        </div>`).join('');
+
+      // Palette
+      const palEl = document.getElementById('res-palette');
+      palEl.innerHTML = data.palette.map(([hex, name]) => `
+        <div class="out-swatch" style="background:${hex};">
+          <div class="out-swatch-name">${name}</div>
+        </div>`).join('');
+
+      // Tips
+      document.getElementById('res-tips').innerHTML = `
+        <strong style="color:var(--ivory);font-size:11px;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px;">💡 Styling Tips</strong>
+        ${data.tips.map(t => `✦ ${t}`).join('<br>')}`;
+    }
+
+    // ── Drag over upload box ──────────────────────────────────────────────────
+    const uploadBox = document.getElementById('uploadBox');
+    if (uploadBox) {
+      uploadBox.addEventListener('dragover', e => {
+        e.preventDefault();
+        uploadBox.style.borderColor = 'var(--gold)';
+        uploadBox.style.background = 'rgba(201,168,76,0.06)';
+      });
+      uploadBox.addEventListener('dragleave', () => {
+        uploadBox.style.borderColor = '';
+        uploadBox.style.background = '';
+      });
+      uploadBox.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadBox.style.borderColor = '';
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          document.getElementById('fileInput').files = dt.files;
+          handleFileSelect(document.getElementById('fileInput'));
+        }
+      });
+    }
+
+    // ── Smooth anchor scroll ──────────────────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
