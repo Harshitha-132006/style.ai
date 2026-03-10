@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Styliosenz.ai — AI Fashion Stylist & Recommendation Platform</title>
+  
+  <meta name="description" content="Get personalized AI fashion recommendations, outfit inspiration, and expert styling advice. Capture your look and find the perfect outfit! #AIFashion #StyleRecommendation">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  
+  <!-- Favicon (placeholder image from Unsplash) -->
+  <link rel="icon" type="image/png" href="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=32&q=80">
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">STYLIOSENZ.AI</a>
+      
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#style-profile">AI Stylist</a></li>
+        <li><a href="#recommendations">Recommendations</a></li>
+        <li><a href="#trending">Trending</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#favorites">Saved</a></li>
+      </ul>
+      
+      <div class="nav-actions">
+        <button id="theme-toggle" title="Toggle Dark/Light Mode">
+          <div class="toggle-thumb">🌙</div>
+        </button>
+        <a href="#style-profile" class="btn btn-primary btn-sm">Get Started</a>
+        <button class="hamburger">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+     <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#style-profile">AI Stylist</a></li>
+        <li><a href="#trending">Trending</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#favorites">Favorites</a></li>
+      </ul>
+  </div>
+
+  <!-- ── Hero Section ── -->
+  <header id="hero">
+    <div class="hero-bg-mesh"></div>
+    <div class="container hero-content">
+      <div class="hero-text anim-fade-in-up">
+        <div class="overline">AI-Powered Fashion Platform</div>
+        <h1 class="display-heading">Elevate Your <span class="gradient-text">Personal Style</span> With AI.</h1>
+        <p class="section-sub">Experience the future of fashion. Get personalized recommendations for outfits, footwear, and jewellery tailored to your body type, skin tone, and the occasion.</p>
+        
+        <div class="hero-cta">
+          <a href="#style-profile" class="btn btn-primary">Start AI Styling 📸</a>
+          <a href="#trending" class="btn btn-secondary">Explore Trending ✨</a>
+        </div>
+        
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">5k+</div>
+            <div class="hero-stat-label">Curation Sets</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">98%</div>
+            <div class="hero-stat-label">Style Accuracy</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">24/7</div>
+            <div class="hero-stat-label">AI Advice</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hero-visual anim-scale-in">
+        <div class="hero-main-card glass">
+           <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80" alt="Fashion Featured">
+           <div class="hero-card-overlay">
+             <div class="badge badge-primary">Featured Look</div>
+             <h3 class="mt-1">Summer Linen Chic</h3>
+             <div class="stars">★★★★★</div>
+           </div>
+           
+           <div class="floating-badge floating-badge-1">🔥 Trending Now</div>
+           <div class="floating-badge floating-badge-2">✨ AI Recommended</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Style Profile / Input Section ── -->
+  <section id="style-profile" class="section">
+    <div class="container">
+      <div class="section-header anim-fade-in-up">
+        <h2 class="section-heading">Create Your <span class="gradient-text">Style Profile</span></h2>
+        <p class="section-sub">Capture your photo or upload an image, and tell us your preferences.</p>
+      </div>
+      
+      <div class="profile-grid">
+        <!-- Photo/Camera Panel -->
+        <div class="camera-panel glass-strong anim-fade-in">
+          <div class="photo-preview-area" id="photo-preview">
+            <div class="photo-placeholder" id="photo-placeholder">
+              <div class="icon">📷</div>
+              <p>Capture your look for <br>better AI analysis</p>
+            </div>
+          </div>
+          <div class="camera-controls">
+            <button class="btn btn-secondary" id="btn-camera">Use Camera</button>
+            <button class="btn btn-secondary" id="btn-upload">Upload Photo</button>
+          </div>
+          <button class="btn btn-primary mt-2" id="btn-capture" style="display: none;">📸 Capture</button>
+          <input type="file" id="photo-file-input" style="display: none;" accept="image/*">
+        </div>
+        
+        <!-- Form Panel -->
+        <div class="pref-panel glass p-3 anim-fade-in">
+          <form id="style-profile-form" class="pref-form">
+            
+            <div class="form-group">
+              <label>Gender Selection</label>
+              <div class="chip-group" id="gender-chips">
+                <div class="chip active" data-group="gender" data-value="women">👩 Women</div>
+                <div class="chip" data-group="gender" data-value="men">👨 Men</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>What's the occasion?</label>
+              <div class="chip-group" id="occasion-chips">
+                <div class="chip active" data-group="occasion" data-value="casual">👟 Casual</div>
+                <div class="chip" data-group="occasion" data-value="party">🎉 Party</div>
+                <div class="chip" data-group="occasion" data-value="office">💼 Office</div>
+                <div class="chip" data-group="occasion" data-value="traditional">🌸 Traditional</div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Your Body Type</label>
+              <div class="chip-group" id="body-type-chips">
+                <div class="chip active" data-group="bodyType" data-value="hourglass">⏳ Hourglass</div>
+                <div class="chip" data-group="bodyType" data-value="pear">🍐 Pear</div>
+                <div class="chip" data-group="bodyType" data-value="apple">🍎 Apple</div>
+                <div class="chip" data-group="bodyType" data-value="rectangle">📏 Rectangle</div>
+                <div class="chip" data-group="bodyType" data-value="inverted">▽ Inverted</div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Skin Tone (for palette advice)</label>
+              <div class="skin-swatch-group">
+                <div class="skin-swatch" style="background:#FFE0BD;" data-value="fair" data-label="Fair"></div>
+                <div class="skin-swatch" style="background:#FFCD94;" data-value="light" data-label="Light"></div>
+                <div class="skin-swatch active" style="background:#EAC08A;" data-value="medium" data-label="Medium"></div>
+                <div class="skin-swatch" style="background:#D8A070;" data-value="tan" data-label="Tan"></div>
+                <div class="skin-swatch" style="background:#8D5524;" data-value="deep" data-label="Deep"></div>
+              </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <button type="submit" class="btn btn-primary btn-lg mt-2" style="width: 100%; justify-content: center;">
+              Get My Styliosenz Recommendation ✨
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Recommendations Dashboard ── -->
+  <section id="recommendations" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-heading">AI <span class="gradient-text">Style Picks</span> For You</h2>
+        <div id="body-type-advice"></div>
+      </div>
+      
+      <div class="tabs-wrapper flex-center">
+        <div class="tabs glass">
+          <button class="tab-btn active" data-occasion="casual">👟 Casual</button>
+          <button class="tab-btn" data-occasion="party">🎉 Party</button>
+          <button class="tab-btn" data-occasion="office">💼 Office</button>
+          <button class="tab-btn" data-occasion="traditional">🌸 Traditional</button>
+        </div>
+      </div>
+      
+      <div class="rec-grid mt-4">
+         <!-- Outfits -->
+         <div class="rec-section mb-3">
+           <div class="rec-category-label">
+             <div class="rec-category-icon outfit">👗</div>
+             <h3 class="rec-section-title">Recommended Outfits</h3>
+           </div>
+           <div class="products-grid" id="rec-outfits">
+              <!-- Outfits injected here -->
+           </div>
+         </div>
+         
+         <div class="grid-2 mt-4">
+           <!-- Footwear -->
+           <div class="rec-section">
+             <div class="rec-category-label">
+               <div class="rec-category-icon footwear">👠</div>
+               <h3 class="rec-section-title">Best Footwear</h3>
+             </div>
+             <div class="products-grid" id="rec-footwear">
+                <!-- Injected here -->
+             </div>
+           </div>
+           
+           <!-- Jewellery -->
+           <div class="rec-section">
+             <div class="rec-category-label">
+               <div class="rec-category-icon jewellery">💍</div>
+               <h3 class="rec-section-title">Jewellery Pieces</h3>
+             </div>
+             <div class="products-grid" id="rec-jewellery">
+                <!-- Injected here -->
+             </div>
+           </div>
+         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Color Palette Suggestion ── -->
+  <section id="color-palette" class="section">
+    <div class="container">
+       <div class="section-header">
+         <h2 class="section-heading">Ideal <span class="gradient-text">Color Palette</span></h2>
+         <p class="section-sub">Colors that will make your skin tone glow.</p>
+       </div>
+       
+       <div class="palette-card glass-strong anim-scale-in" id="palette-content">
+          <!-- Injected by recommendations.js -->
+       </div>
+    </div>
+  </section>
+
+  <!-- ── Catalogs Section ── -->
+  <section id="catalogs" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-heading">Explore Our <span class="gradient-text">Catalogs</span></h2>
+        <p class="section-sub">Browse full collections for Men and Women.</p>
+      </div>
+      
+      <div class="catalogs-grid" id="catalogs-grid">
+         <!-- Injected by gallery.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Trending Section ── -->
+  <section id="trending" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-heading">Trending <span class="gradient-text">This Season</span></h2>
+        <p class="section-sub">Stay ahead with the latest looks from world-class brands.</p>
+      </div>
+      
+      <div class="grid-3" id="trending-grid">
+         <!-- Injected by gallery.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Wardrobe Inspiration Gallery ── -->
+  <section id="gallery" class="section bg-light">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-heading">Wardrobe <span class="gradient-text">Inspiration</span></h2>
+        <p class="section-sub">Detailed fashion sectors. Click any style to shop the look.</p>
+      </div>
+      
+      <div class="gallery-filters">
+        <button class="chip active gallery-filter-btn" data-category="all">All Styles</button>
+        <button class="chip gallery-filter-btn" data-category="casual">Casual</button>
+        <button class="chip gallery-filter-btn" data-category="party">Party</button>
+        <button class="chip gallery-filter-btn" data-category="office">Office</button>
+        <button class="chip gallery-filter-btn" data-category="traditional">Traditional</button>
+      </div>
+      
+      <div class="gallery-grid" id="gallery-grid">
+         <!-- Injected by gallery.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Inspiration Shop Section (Dynamic) ── -->
+  <section id="inspiration-results" class="section" style="display: none;">
+    <div class="container">
+      <div class="glass-panel p-4 anim-fade-in">
+        <div class="section-header" style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+          <h2 class="section-heading" id="inspo-title" style="font-size: 2rem;">Shop the <span class="gradient-text">Look</span></h2>
+          <p id="inspo-desc" style="color: var(--text-secondary);"></p>
+        </div>
+        <div class="products-grid" id="inspo-products" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+          <!-- Filtered products injected here -->
+        </div>
+        <div class="text-center mt-4">
+          <button class="btn btn-outline" onclick="document.getElementById('inspiration-results').style.display='none';">Close Inspiration Shop</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Saved Favorites Section ── -->
+  <section id="favorites" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-heading">Your <span class="gradient-text">Saved Favorites</span></h2>
+        <p class="section-sub">Items you've hearted from our recommendations and trending sections.</p>
+      </div>
+      
+      <div id="favorites-grid">
+         <!-- Injected by favorites.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI Chatbot ── -->
+  <div id="chatbot-container">
+    <button id="chatbot-fab" title="Ask AI Stylist">
+      <span>💬</span>
+      <div class="chatbot-unread">1</div>
+    </button>
+    
+    <div id="chatbot-panel" class="glass-strong">
+      <div class="chatbot-header">
+        <div class="chatbot-header-info">
+          <div class="chatbot-avatar">✨</div>
+          <div>
+            <div class="chatbot-name">AI Stylist</div>
+            <div class="chatbot-status">Online • Styling Mode</div>
+          </div>
+        </div>
+        <button class="chatbot-close" id="chatbot-close">✕</button>
+      </div>
+      
+      <div class="chatbot-messages" id="chatbot-messages">
+        <div class="chat-bubble bot">
+          Hello gorgeous! 💫 I'm your personal AI stylist. What's the occasion today?
+          <div class="chat-timestamp">Just now</div>
+        </div>
+      </div>
+      
+      <div class="chatbot-input-area">
+        <input type="text" id="chatbot-input" placeholder="Ask for fashion advice..." autocomplete="off">
+        <button id="chatbot-send">↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Lightbox Overlay ── -->
+  <div id="lightbox">
+    <button class="lightbox-close">✕</button>
+    <img src="" alt="Full size view" class="lightbox-img">
+  </div>
+
+  <!-- ── Toast Container ── -->
+  <div id="toast-container"></div>
+
+  <!-- ── Footer ── -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">STYLIOSENZ.AI</div>
+          <p>The ultimate destination for AI-driven fashion styling. Empowering your style journey with technology and expertise.</p>
+          <div class="footer-social">
+            <a href="#">𝕏</a>
+            <a href="#"></a>
+            <a href="#"></a>
+            <a href="#"></a>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#trending">Trending</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#style-profile">AI Stylist</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Assistance</h4>
+          <ul>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Style Guide</a></li>
+            <li><a href="#">Body Type FAQ</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Styliosenz.ai — Advanced Agentic Coding Project. All Rights Reserved.</p>
+        <p>Built with ❤️ for Fashion Enthusiasts</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
