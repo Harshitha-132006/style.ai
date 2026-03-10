@@ -1,1 +1,1 @@
-# style.ai
+# styliosenz.ai
